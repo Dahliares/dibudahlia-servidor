@@ -1,8 +1,12 @@
 import express from 'express';
 import mysql from 'mysql';
+import logger from 'morgan';
 import cors from 'cors';
 
 const app = express();
+
+//middelwares
+app.use(logger('dev'));
 
 
 //db
@@ -24,8 +28,20 @@ app.listen(app.get('port'), () => {
 
 //rutas
 
-app.get('/all', (req, res)=>{
+app.get('/', (req, res)=>{
     db.query('SELECT * FROM dibudahlia',
+    (err, result)=>{
+        if(err){ console.log(err)}
+       else{res.send(result);}
+        })
+   
+});
+
+app.get('/:id', (req, res)=>{
+
+    const params = req.params;
+
+    db.query('SELECT * FROM dibudahlia WHERE id = ' + params.id,
     (err, result)=>{
         if(err){ console.log(err)}
        else{res.send(result);}
