@@ -7,7 +7,9 @@ const app = express();
 
 //middelwares
 app.use(logger('dev'));
-
+app.use(express.json())
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
 //db
 const db = mysql.createConnection({
@@ -18,7 +20,7 @@ const db = mysql.createConnection({
 })
 
 //configuraciones
-app.use(cors());
+
 app.set('port', process.env.PORT || 3333)
 
 app.listen(app.get('port'), () => {
@@ -37,15 +39,31 @@ app.get('/', (req, res)=>{
    
 });
 
-app.get('/:id', (req, res)=>{
+app.get('/dibujo/:id', (req, res)=>{
 
     const params = req.params;
 
     db.query('SELECT * FROM dibudahlia WHERE id = ' + params.id,
     (err, result)=>{
         if(err){ console.log(err)}
-       else{res.send(result);}
+       else{res.send(result); }
         })
+
+
+   
+});
+
+app.get('/year/:year', (req, res)=>{
+
+    const params = req.params;
+
+    db.query('SELECT * FROM dibudahlia WHERE year LIKE "' + params.year +'"',
+    (err, result)=>{
+        if(err){ console.log(err)}
+       else{res.send(result);console.log(result)}
+        })
+
+
    
 });
 
