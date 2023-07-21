@@ -71,6 +71,21 @@ app.get('/year/:year', (req, res) => {
 });
 
 
+app.get('/comentarios/:id', (req, res) => {
+
+    const params = req.params;
+
+    db.query('SELECT * FROM comentarios WHERE dibujo_id = ? ', params.id,
+        (err, result) => {
+            if (err) { console.log(err) }
+            else { res.send(result); console.log(result) }
+        })
+
+
+});
+
+
+
 //registrar usuario encriptando contraseña
 app.post("/register", async (req, res) => {
 
