@@ -29,9 +29,11 @@ app.listen(app.get('port'), "0.0.0.0",() => {
 //rutas
 
 
-//enviar todos los dibujos
+// --------------------- DIBUJOS --------------------------
+
+//obtener todos los dibujos
 app.get('/', (req, res) => {
-    db.query('SELECT * FROM dibudahlia',
+    db.query('SELECT * FROM dibudahlia ORDER BY year DESC',
         (err, result) => {
             if (err) { console.log(err) }
             else { res.send(result); }
@@ -71,6 +73,8 @@ app.get('/year/:year', (req, res) => {
 });
 
 
+// --------------- COMENTARIOS ------------------------------
+
 app.get('/comentarios/:id', (req, res) => {
 
     const params = req.params;
@@ -84,6 +88,24 @@ app.get('/comentarios/:id', (req, res) => {
 
 });
 
+
+//guardar nuevo comentario
+app.post("/comentario", async (req, res) => {
+
+    const id = req.body.id;
+    const user = req.body.user;
+    const comentario = req.body.comentario;
+    
+    
+    db.query('INSERT INTO comentarios (user, comentario, dibujo_id) VALUES (?,?,?)', [user, comentario, id], (err, result) => {
+        if (err) { console.log(err); }
+        else { res.send("Comentario guardado!") }
+    });
+
+});
+
+
+// ---------------- REGISTER + LOGIN ----------------------------------
 
 
 //registrar usuario encriptando contraseña
@@ -100,24 +122,6 @@ app.post("/register", async (req, res) => {
     });
 
 });
-
-
-/*app.put('/resetpass', (req, res) => {
-
-
-   const username = req.body.username;
-const pass = req.body.pass;
-
-    let hashPassword = await encriptar(pass);
-
-    db.query('INSERT INTO users (username, password) VALUES (?,?)', [username, hashPassword], (err, result) => {
-        if (err) { console.log(err); }
-        else { res.send("User registrado con exito") }
-    });
-
-
-});*/
-
 
 //comprobar que la contraseña es correcta al hacer login siempre que usuario exista
 app.post('/login', (req, res) => {
@@ -143,6 +147,29 @@ app.post('/login', (req, res) => {
         });
 
 });
+
+
+
+
+
+/*app.put('/resetpass', (req, res) => {
+
+
+   const username = req.body.username;
+   const pass = req.body.pass;
+
+    let hashPassword = await encriptar(pass);
+
+    db.query('INSERT INTO users (username, password) VALUES (?,?)', [username, hashPassword], (err, result) => {
+        if (err) { console.log(err); }
+        else { res.send("User registrado con exito") }
+    });
+
+
+});*/
+
+
+
 
 
 //cambiar la contraseña de un usuario
