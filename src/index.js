@@ -101,7 +101,7 @@ app.post("/comentario", async (req, res) => {
     
     db.query('INSERT INTO comentarios (user, comentario, dibujo_id) VALUES (?,?,?)', [user, comentario, id], (err, result) => {
         if (err) { console.log(err); }
-        else { res.send("Comentario guardado!") }
+        else { res.send({"mensaje":"Comentario guardado!"}) }
     });
 
 });
