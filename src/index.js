@@ -1,10 +1,11 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import path from 'path';
 import bodyParser from 'body-parser';
 import { encriptar, comparar } from './crypt.js';
-import { db } from './database.js';
+import mysql from 'mysql';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -15,7 +16,36 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+//DB CONEXIÓN
 
+let db;
+const configuration = {
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DBNAME
+  }
+function handleDisconnect() {
+    db = mysql.createConnection(configuration);
+  
+    db.connect(function(err) {
+      if (err) {
+        console.log("Error de conexión con la bd:", err);
+        setTimeout(handleDisconnect, 2000);
+      }else{
+          console.log("Conectado correctamente a la bd");
+      }
+    });
+    db.on("error", function(err) {
+      console.log("db error", err);
+      if (err.code === "PROTOCOL_CONNECTION_LOST") {
+        handleDisconnect();
+      } else {
+        throw err;
+      }
+    });
+  }
+  handleDisconnect();
 
 //configuraciones
 
@@ -27,8 +57,6 @@ app.listen(app.get('port'), "0.0.0.0",() => {
 
 
 //rutas
-
-
 // --------------------- DIBUJOS --------------------------
 
 //obtener todos los dibujos
