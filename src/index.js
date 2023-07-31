@@ -8,13 +8,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-
+app.disable('x-Powered-By');
 
 //middelwares
 app.use(logger('dev'));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
 
 //DB CONEXIÓN
 
@@ -97,6 +98,21 @@ app.get('/year/:year', (req, res) => {
         })
 
 
+
+});
+
+app.post("/add", async (req, res) => {
+
+    const name = req.body.name;
+    const year = req.body.year;
+    const description = req.body.description;
+    const img = req.body.img;
+    
+    
+    db.query('INSERT INTO dibudahlia (name, year, description, img) VALUES (?,?,?)', [name, year, description,img], (err, result) => {
+        if (err) { console.log(err); }
+        else { res.send({"mensaje":"Dibujo guardado!"}) }
+    });
 
 });
 
@@ -232,6 +248,10 @@ app.post('/resetpass', (req, res) => {
         });
 
 
+});
+
+app.use((req,res) =>{
+    res.status(404).send("<h1>Error 404</h1>");
 });
 
 
