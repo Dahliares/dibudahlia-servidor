@@ -109,7 +109,7 @@ app.post("/add", async (req, res) => {
     const img = req.body.img;
     
     
-    db.query('INSERT INTO dibudahlia (name, year, description, img) VALUES (?,?,?)', [name, year, description,img], (err, result) => {
+    db.query('INSERT INTO dibudahlia (name, year, description, img) VALUES (?,?,?,?)', [name, year, description,img], (err, result) => {
         if (err) { console.log(err); }
         else { res.send({"mensaje":"Dibujo guardado!"}) }
     });
