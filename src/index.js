@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { encriptar, comparar } from './crypt.js';
 import mysql from 'mysql';
+import multer from 'multer';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,8 +14,10 @@ app.disable('x-Powered-By');
 //middelwares
 app.use(logger('dev'));
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }))
 app.use(bodyParser.json())
+
+const upload = multer({ storage:multer.memoryStorage() });
 
 
 //DB CONEXIÓN
@@ -101,20 +104,28 @@ app.get('/year/:year', (req, res) => {
 
 });
 
-app.post("/add", async (req, res) => {
+app.post("/add", upload.single('file'), (req, res) => {
+
+    let formato = req.file.mimetype.split('/')[1];    
+
+    let img = "data:image/" + formato + ";base64," + req.file.buffer.toString('base64');
+    
 
     const name = req.body.name;
     const year = req.body.year;
     const description = req.body.description;
-    const img = req.body.img;
+   
     
     
     db.query('INSERT INTO dibudahlia (name, year, description, img) VALUES (?,?,?,?)', [name, year, description,img], (err, result) => {
         if (err) { console.log(err); }
-        else { res.send({"mensaje":"Dibujo guardado!"}) }
+        else { 
+            res.redirect('http://dibudahlia.saraland.es');
+         }
     });
 
 });
+
 
 
 // --------------- COMENTARIOS ------------------------------
