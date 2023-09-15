@@ -106,9 +106,9 @@ app.get('/year/:year', (req, res) => {
 
 app.post("/add", upload.single('file'), (req, res) => {
 
-    let formato = req.file.mimetype.split('/')[1];    
+    let formatoImg = req.file.mimetype.split('/')[1];    
 
-    let img = "data:image/" + formato + ";base64," + req.file.buffer.toString('base64');
+    let img = "data:image/" + formatoImg + ";base64," + req.file.buffer.toString('base64');
     
 
     const name = req.body.name;
@@ -118,9 +118,13 @@ app.post("/add", upload.single('file'), (req, res) => {
     
     
     db.query('INSERT INTO dibudahlia (name, year, description, img) VALUES (?,?,?,?)', [name, year, description,img], (err, result) => {
-        if (err) { console.log(err); }
-        else { 
-            res.redirect('http://dibudahlia.saraland.es');
+        if (err) { 
+            console.log(err); 
+            res.send({"mensaje":"error"});
+        }
+        else {  
+            res.send({"mensaje":"juego insertado"});
+           // res.redirect('http://dibudahlia.saraland.es');
          }
     });
 
