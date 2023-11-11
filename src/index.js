@@ -27,7 +27,8 @@ const configuration = {
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    database: process.env.DBNAME
+    database: process.env.DBNAME,
+    port: process.env.PORT
   }
 function handleDisconnect() {
     db = mysql.createConnection(configuration);
